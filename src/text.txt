@@ -1,0 +1,185 @@
+ {/*<div>
+     <MapUser/>
+      <FormUser/>
+      <HtUser/>
+      <LikeUser/>
+      <ApiUser/>
+      <DebounceUser/>
+      <UserData.Provider value={{name, setName}}>
+        <Home/>
+        <Profile/>
+      </UserData.Provider>
+      
+      <Users/>
+      <Posts/>
+    </div>*/}
+
+import React, { useEffect, useState } from 'react'
+import MapUser from './components/MapUser'
+import FormUser from './components/FormUser'
+import HtUser from './components/HtUser'
+import LikeUser from './components/LikeUser'
+import ApiUser from './components/ApiUser'
+import DebounceUser from './components/DebounceUser'
+import { UserData } from './contexts/UserContext'
+import Home from './components/Home'
+import Profile from './components/Profile'
+import Users from './components/Users'
+import Posts from './components/Posts'
+import CustomerView from './components/CustomerView'
+import CreateCustomer from './components/CreateCustomer'
+import { Provider } from 'react-redux'
+import { store } from './store'
+import Layout from './components/Layout'
+import NavbarComponent from './components/NavbarComponent'
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+
+const data01 = [
+  { name: 'Group A', value: 400 },
+  { name: 'Group B', value: 300 },
+  { name: 'Group C', value: 300 },
+  { name: 'Group D', value: 200 },
+  { name: 'Group E', value: 278 },
+  { name: 'Group F', value: 189 },
+];
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF6798'];
+
+
+const App = () => {
+
+
+  return (
+   <ResponsiveContainer width="100%" height={300}>
+    <PieChart width="100%" height={300}>
+      <Pie data={data01} dataKey="value" cx="50%" cy="50%" fill='#8884d8' paddingAngle={2} label>
+      {data01.map((data, index)=> (
+        <Cell key={`cell1-${index}`} fill={COLORS[index % COLORS.length]}/>
+      ))}
+      </Pie>
+      <Legend/>
+    </PieChart>
+   </ResponsiveContainer>
+  )
+}
+
+export default App;
+
+import React, { useState } from 'react'
+import explorer from './data/FolderData'
+import Folder from './components/Folder'
+import useTraverseTree from './hooks/use-transverse-tree'
+
+
+const App = () => {
+
+  const [explorerData, setExplorerData] = useState(explorer)
+
+  const {insertNode, deleteNode} = useTraverseTree()
+
+  const handleInsertNode = (folderId, item, isFolder)=>{
+    const finalTree = insertNode(explorerData, folderId, item, isFolder)
+
+    setExplorerData(finalTree)
+  }
+  const handleDeleteNode = (folderId) => {
+    const finalTree = deleteNode(explorerData, folderId);
+    setExplorerData(finalTree);
+};
+
+  return (
+    <div>
+      <Folder handleInsertNode={handleInsertNode} handleDeleteNode={handleDeleteNode} explorer={explorerData}/>
+    </div>
+  )
+}
+
+export default App
+
+
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+
+const App = () => {
+
+  const [products, setProducts] = useState([])
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+
+  const fetchProducts = async ()=>{
+
+    try{
+
+      const response = await axios.get(`https://dummyjson.com/products?limit=10&skip=${page * 10-10}`)
+
+      if(response.data && response.data.products){
+      setProducts(response.data.products)
+      setTotalPages(Math.ceil(response.data.total / 10));
+      console.log(response.data)
+      }
+    } catch(err){
+      console.log(err)
+    }
+  } 
+
+  const setPageHandler = (selectedPage) => {
+    if (selectedPage >= 1 && selectedPage <= totalPages && selectedPage !== page) {
+      setPage(selectedPage);
+    }
+  };
+
+  useEffect(()=>{
+    fetchProducts()
+  }, [page])
+  return (
+    <div>
+    <div className='products'>
+      {products.map((prod)=>{
+        return (
+          <span className='products__single' key={prod.id}>
+            <img src={prod.thumbnail} alt={prod.title}/>
+            <span>{prod.title}</span>
+          </span>
+        )
+      })}
+    </div>
+    <div className='pagination'>
+      <span onClick={()=> setPageHandler(page-1)} className={page > 1 ? "pagination__disable": ""}>{"<"}</span>
+      {[...Array(totalPages)].map((_, index)=>{
+        return(
+          <span className={page === index+1 ? "pagination__selected": ""} onClick={()=> setPageHandler(index+ 1)} key={products.id}>{index+1}</span>
+
+        )
+      })}
+      <span onClick={()=> setPageHandler(page+1)} className={page < totalPages ? "": "pagination__disable"}>{">"}</span>
+    </div>
+    </div>
+  )
+}
+
+export default App
+
+
+import React, { createContext, useState } from 'react'
+import ApiUser from './components/ApiUser'
+import Bts from './components/Bts'
+import Container from './Container'
+
+export const ThemeContext = createContext()
+
+const App = () => {
+  const [theme, setTheme] = useState("light")
+
+  const toggleTheme = ()=>{
+    setTheme((curr)=> curr === "light" ? "dark" : "light")
+  }
+  return (
+    <ThemeContext.Provider value={{theme}}>
+    <button onClick={toggleTheme}>Toggle Theme</button>
+    <h1>App</h1>
+    <Container/>
+    </ThemeContext.Provider>
+  )
+}
+
+export default App

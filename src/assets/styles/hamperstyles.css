@@ -1,0 +1,73 @@
+.hamperContainer{
+}
+
+.containerRow{
+    background-color: #005339;
+    border-radius: 20px;
+    position: relative;
+    margin-top: 10px;
+    padding: 60px;
+}
+
+.HamperBox {
+    background-color: #9F1515;
+    border-radius: 10px;
+    min-height: 300px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.hampimageContainer {
+  width: 100%;
+  height: auto;
+  padding: 5px;
+}
+
+.hampImage{
+    width: 100%;
+    height: auto;
+}
+
+.odrButton{
+    border: none;
+    background-color: yellow;
+    color: #9F1515;
+    font-size: 18px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.lightContainer, .chrContainer, .treeContainer{
+    width: 80px;
+    height: auto;
+}
+
+.lightContainer{
+    width: 120px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.chrContainer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.treeContainer{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.lightContainer > img, .chrContainer >img, .treeContainer > img{
+    width: 100%;
+    height: auto;
+}
+
+
+
